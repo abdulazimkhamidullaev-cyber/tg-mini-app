@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Tasks</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <img id="avatar" alt="">
+    <div>
+      <div id="hello">Hello!</div>
+      <div id="stats" class="hint">Loading…</div>
+    </div>
+  </header>
+
+  <form id="add-form">
+    <input id="new-task" placeholder="New task…" maxlength="200" autocomplete="off">
+  </form>
+
+  <ul id="list"></ul>
+  <p id="empty" class="hint" hidden>No tasks yet. Add one above.</p>
+  <p id="error" hidden></p>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

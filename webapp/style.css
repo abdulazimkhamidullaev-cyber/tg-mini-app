@@ -1,0 +1,49 @@
+/* Colors come from Telegram's theme, so the app matches light/dark mode automatically. */
+:root {
+  --bg: var(--tg-theme-bg-color, #fff);
+  --text: var(--tg-theme-text-color, #000);
+  --hint: var(--tg-theme-hint-color, #8e8e93);
+  --accent: var(--tg-theme-button-color, #2481cc);
+  --section: var(--tg-theme-secondary-bg-color, #f1f1f4);
+  --danger: var(--tg-theme-destructive-text-color, #e53935);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 16px;
+  font: 16px/1.4 -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+#avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--section); object-fit: cover; }
+#avatar:not([src]) { visibility: hidden; }
+#hello { font-weight: 600; font-size: 18px; }
+.hint { color: var(--hint); font-size: 14px; }
+
+#new-task {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  background: var(--section);
+  color: var(--text);
+  font-size: 16px;
+  outline: none;
+}
+#new-task:focus { box-shadow: 0 0 0 2px var(--accent); }
+
+ul { list-style: none; padding: 0; margin: 16px 0 0; }
+li {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; margin-bottom: 8px;
+  background: var(--section); border-radius: 12px;
+}
+li .text { flex: 1; word-break: break-word; }
+li.done .text { color: var(--hint); text-decoration: line-through; }
+li input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); }
+li button {
+  border: none; background: none; color: var(--danger);
+  font-size: 20px; line-height: 1; padding: 4px; cursor: pointer;
+}
+#error { color: var(--danger); }
