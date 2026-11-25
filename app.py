@@ -15,18 +15,13 @@ import time
 from pathlib import Path
 from urllib.parse import parse_qsl
 
-from aiogram import Bot, Dispatcher, F
-from aiogram.filters import CommandStart
-from aiogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    MenuButtonWebApp,
-    Message,
-    WebAppInfo,
-)
+from aiogram import Bot, Dispatcher
+from aiogram.types import MenuButtonWebApp, WebAppInfo
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler
 from aiohttp import web
 from dotenv import load_dotenv
+
+import customer
 
 load_dotenv()
 BOT_TOKEN = os.environ["BOT_TOKEN"]
@@ -171,26 +166,9 @@ routes.static("/static", BASE_DIR / "webapp")
 # ---------------------------------------------------------------- bot
 bot = Bot(BOT_TOKEN)
 dp = Dispatcher()
-
-
-def open_app_keyboard() -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[[InlineKeyboardButton(text="📋 Open my tasks", web_app=WebAppInfo(url=WEBAPP_URL))]]
-    )
-
-
-@dp.message(CommandStart())
-async def start(message: Message):
-    await message.answer(
-        f"Hi, {message.from_user.first_name}! Tap the button to open your task list.",
-        reply_markup=open_app_keyboard(),
-    )
-
-
-@dp.message(F.web_app_data)
-async def on_web_app_data(message: Message):
-    """Receives Telegram.WebApp.sendData() (only from keyboard-button launches)."""
-    await message.answer(f"Got data from the Mini App: {message.web_app_data.data}")
+# Telegram username of the shop admin that /help sends customers to.
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "")
+dp.include_router(customer.setup(db, WEBAPP_URL, ADMIN_USERNAME))
 
 
 # ---------------------------------------------------------------- run
@@ -210,6 +188,11 @@ async def main():
     await bot.set_chat_menu_button(
         menu_button=MenuButtonWebApp(text="Open app", web_app=WebAppInfo(url=WEBAPP_URL))
     )
+    # Command menu ("/" button): English by default, Russian/Uzbek for those app languages.
+    await bot.set_my_commands(customer.bot_commands("en"))
+    for code in ("ru", "uz"):
+        await bot.set_my_commands(customer.bot_commands(code), language_code=code)
+
     try:
         if USE_WEBHOOK:
             await bot.set_webhook(WEBAPP_URL.rstrip("/") + WEBHOOK_PATH, secret_token=WEBHOOK_SECRET)
